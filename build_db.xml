@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ChannelCreekWS" default="exportDDL">
+
+  <import file="nbproject/build-impl.xml"/>
+
+  <property name="exportDDL.build.dir" value="./build/web/WEB-INF/classes" />
+  <property name="exportDDL.hibernate.home" value="./lib/hibernate-support" />
+  <property name="exportDDL.ejb3.home" value="./lib/ejb3-persistence" />
+  <property name="exportDDL.lib.home" value="./lib" />
+
+  <path id="hibernate-ClassPath">
+    <fileset dir="${exportDDL.hibernate.home}">
+      <include name="**/*.jar" />
+    </fileset>
+    <pathelement location="${exportDDL.build.dir}" />
+    <pathelement location="${exportDDL.ejb3.home}/ejb3-persistence.jar" />
+    <pathelement location="${exportDDL.lib.home}/derby.jar" />
+    <pathelement location="${exportDDL.lib.home}/freemarker.jar" />
+  </path>
+
+  <taskdef name="htools" classname="org.hibernate.tool.ant.HibernateToolTask" classpathref="hibernate-ClassPath" />
+
+  <target name="exportDDL" depends="clean,compile">
+    <htools destdir=".">
+      <classpath refid="hibernate-ClassPath" />
+      <annotationconfiguration
+        configurationfile="${exportDDL.build.dir}/hibernate.cfg.xml"
+        namingstrategy="org.hibernate.cfg.ImprovedNamingStrategy" />
+      <hbm2ddl export="false" format="true" outputfilename="create_db.sql" />
+    </htools>
+  </target>
+
+</project>

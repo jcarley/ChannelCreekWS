@@ -1,0 +1,50 @@
+team: &id001
+  name: The Eagles
+  active: true
+
+player:
+  team_id: *id001
+  name: Bob Phillips
+  active: true
+  jersey_number: 34
+  position: Short Stop
+
+player:
+  player_id: 2
+  team_id: 1
+  name: Henry Aaron
+  active: true
+  jersey_number: 12
+  position: Pitcher
+
+player:
+  player_id: 3
+  team_id: 1
+  name: Jeremy Walters
+  active: true
+  jersey_number: 23
+  position: First Base
+
+player:
+  player_id: 4
+  team_id: 1
+  name: Richard Black
+  active: true
+  jersey_number: 16
+  position: Leftfield
+
+player:
+  player_id: 5
+  team_id: 1
+  name: Prince Fielder
+  active: true
+  jersey_number: 43
+  position: Second Base
+
+player:
+  player_id: 6
+  team_id: 1
+  name: Matt Kenseth
+  active: false
+  jersey_number: 17
+  position: Rightfield

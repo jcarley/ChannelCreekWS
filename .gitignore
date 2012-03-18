@@ -1,0 +1,7 @@
+.DS_Store
+ChannelCreekDB
+build/
+derby.log
+dist/
+
+
