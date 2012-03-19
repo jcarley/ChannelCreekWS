@@ -1,31 +1,33 @@
-team: &team01
+team:
+  _id: 01
   name: The Eagles
   active: true
 
-player: &player01
+player:
+  _id: 01
   name: Bob Phillips
   active: true
   jersey_number: 34
   position: Short Stop
 
-player: &player02
-  player_id: 2
-  team_id: 1
+player:
+  _id: 02
   name: Henry Aaron
   active: true
   jersey_number: 12
   position: Pitcher
 
-player: &player03
-  player_id: 3
-  team_id: 1
+player:
+  _id: 03
   name: Jeremy Walters
   active: true
   jersey_number: 23
   position: First Base
 
-schedule: &schedule01
+schedule:
+  _id: 01
   season_name: 2010
 
-game: &game01
+game:
+  _id: 01
   location: County Stadium
