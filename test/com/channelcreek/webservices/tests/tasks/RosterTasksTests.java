@@ -1,13 +1,17 @@
 package com.channelcreek.webservices.tests.tasks;
 
 import com.channelcreek.infrastructure.tasks.TaskExecutor;
+import com.channelcreek.webservices.model.HibernateUtil;
 import com.channelcreek.webservices.model.Player;
+import com.channelcreek.webservices.model.Team;
 import com.channelcreek.webservices.tasks.ActivatePlayerTask;
 import com.channelcreek.webservices.tasks.FindActivePlayersTask;
 import com.channelcreek.webservices.tasks.FindActiveTeamsTask;
 import com.channelcreek.webservices.tasks.SubmitPlayerToTeamRosterTask;
 import com.channelcreek.webservices.tests.data.DbFactory;
-import com.channelcreek.webservices.tests.data.PropertyOverrides;
+import com.channelcreek.webservices.tests.data.SequencePropertyOverrides;
+import java.util.List;
+import org.hibernate.Session;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -24,6 +28,7 @@ public class RosterTasksTests {
 
   @Before
   public void setUp() {
+    HibernateUtil.updateDatabaseScheme();
   }
 
   @After
@@ -33,13 +38,29 @@ public class RosterTasksTests {
   @Test
   public void testShouldFindAllActiveTeams() {
 
+    // expected result
     final int EXPECTED_ACTIVE_TEAMS = 5;
 
-    FindActiveTeamsTask findActiveTeamsTask = new FindActiveTeamsTask();
+    // Arrange
+    List<Team> teams = DbFactory.sequence(Team.class, EXPECTED_ACTIVE_TEAMS, new SequencePropertyOverrides<Team>() {
 
+      @Override
+      public void override(Team obj, int index) {
+        obj.setName("Team " + index);
+      }
+
+    });
+
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    DbFactory.save(teams, session);
+
+    // Act
+    FindActiveTeamsTask findActiveTeamsTask = new FindActiveTeamsTask();
     TaskExecutor.executeTask(findActiveTeamsTask);
 
-    assertEquals(findActiveTeamsTask.getActiveTeams().size(), EXPECTED_ACTIVE_TEAMS);
+
+    // Assert
+    assertEquals(EXPECTED_ACTIVE_TEAMS, findActiveTeamsTask.getActiveTeams().size());
 
   }
 
@@ -47,13 +68,28 @@ public class RosterTasksTests {
   public void testShouldFindAllActivePlayers() {
 
     final int EXPECTED_ACTIVE_PLAYERS = 5;
-    final int TEAM_ID = 1;
 
-    FindActivePlayersTask findActivePlayersTask = new FindActivePlayersTask(TEAM_ID);
+    Team team = DbFactory.build(Team.class, null);
+    List<Player> players = DbFactory.sequence(Player.class, EXPECTED_ACTIVE_PLAYERS + 1, new SequencePropertyOverrides<Player>() {
+
+      @Override
+      public void override(Player obj, int index) {
+        obj.setName("Player " + index);
+        if(index == 0) {
+          obj.setActive(false);
+        }
+      }
+    });
+
+//    team.getPlayers().addAll(players);
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    DbFactory.save(team, session);
+
+    FindActivePlayersTask findActivePlayersTask = new FindActivePlayersTask(team.getTeamId());
 
     TaskExecutor.executeTask(findActivePlayersTask);
 
-    assertEquals(findActivePlayersTask.getPlayers().size(), EXPECTED_ACTIVE_PLAYERS);
+    assertEquals(EXPECTED_ACTIVE_PLAYERS, findActivePlayersTask.getPlayers().size());
 
     for(Player player : findActivePlayersTask.getPlayers()) {
       assertTrue(player.isActive());
@@ -97,13 +133,6 @@ public class RosterTasksTests {
 
   @Test
   public void testActivateExistingPlayer_RosterMaxExceeded() {
-
-    Player player = DbFactory.build(Player.class, new PropertyOverrides<Player>() {
-      @Override
-      public void override(Player obj) {
-        obj.setJerseyNumber(65);
-      }
-    });
 
     long teamId = 2;
     long playerId = 3;

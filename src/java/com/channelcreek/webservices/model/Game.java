@@ -2,7 +2,10 @@ package com.channelcreek.webservices.model;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 /**
  *
@@ -18,7 +21,7 @@ public class Game implements Serializable {
   private List<Schedule> schedules;
 
   @Id
-  @GeneratedValue(strategy=GenerationType.TABLE)
+  @GeneratedValue
   protected long getGameId() {
     return gameId;
   }

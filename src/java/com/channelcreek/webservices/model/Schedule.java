@@ -17,7 +17,7 @@ public class Schedule implements Serializable {
   private Set<Game> games = new HashSet<Game>();
 
   @Id
-  @GeneratedValue(strategy=GenerationType.TABLE)
+  @GeneratedValue
   protected long getScheduleId() {
     return scheduleId;
   }

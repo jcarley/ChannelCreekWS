@@ -27,7 +27,7 @@ public class Player implements Serializable {
   }
 
   @Id
-  @GeneratedValue(strategy=GenerationType.TABLE)
+  @GeneratedValue
   public long getPlayerId() {
     return playerId;
   }

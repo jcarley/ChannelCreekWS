@@ -1,8 +1,14 @@
 package com.channelcreek.webservices.tasks;
 
 import com.channelcreek.infrastructure.tasks.BaseTask;
+import com.channelcreek.webservices.model.HibernateUtil;
 import com.channelcreek.webservices.model.Team;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  *
@@ -10,32 +16,26 @@ import java.util.ArrayList;
  */
 public class FindActiveTeamsTask extends BaseTask {
 
-  private ArrayList<Team> activeTeams = new ArrayList<Team>();
+  private List<Team> activeTeams = new ArrayList<Team>();
 
-  public ArrayList<Team> getActiveTeams() {
+  public List<Team> getActiveTeams() {
     return this.activeTeams;
   }
 
   @Override
   public void Execute() {
-    
-    String[] names = new String[] {
-      "The Eagles",
-      "The Zebras",
-      "The Warhawks",
-      "The Beagles",
-      "The Ducks"
-    };
 
-    for(String name : names ) {
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Criteria criteria = session.createCriteria(Team.class);
+    Query query = session.createQuery("from Team where active = true");
+    List list = query.list();
+    Iterator iterator = list.iterator();
 
-      Team team = new Team();
-      team.setName(name);
-      team.setActive(true);
-
-      activeTeams.add(team);
+    while(iterator.hasNext()) {
+      activeTeams.add((Team)iterator.next());
     }
 
+    session.close();
   }
 
 }

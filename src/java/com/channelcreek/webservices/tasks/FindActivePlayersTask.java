@@ -1,8 +1,12 @@
 package com.channelcreek.webservices.tasks;
 
 import com.channelcreek.infrastructure.tasks.BaseTask;
+import com.channelcreek.webservices.model.HibernateUtil;
 import com.channelcreek.webservices.model.Player;
+import com.channelcreek.webservices.model.Team;
 import java.util.ArrayList;
+import java.util.Collections;
+import org.hibernate.Session;
 
 /**
  *
@@ -10,10 +14,10 @@ import java.util.ArrayList;
  */
 public class FindActivePlayersTask extends BaseTask {
 
-  private int teamId;
+  private long teamId;
   private ArrayList<Player> activePlayers = new ArrayList<Player>();
 
-  public FindActivePlayersTask(int teamId) {
+  public FindActivePlayersTask(long teamId) {
     this.teamId = teamId;
   }
 
@@ -23,16 +27,13 @@ public class FindActivePlayersTask extends BaseTask {
 
   @Override
   public void Execute() {
-    
-    for(int c = 0; c < 5; c++) {
-      Player player = new Player();
-      player.setName("Joe");
-      player.setActive(true);
-      player.setJerseyNumber(c);
-      player.setPosition(Integer.toString(c));
 
-      activePlayers.add(player);
-    }
+    Session session = HibernateUtil.getSessionFactory().openSession();
+    Team team = (Team)session.get(Team.class, this.teamId);
+
+    Collections.copy(team.getActivePlayers(), this.activePlayers);
+
+    session.close();
   }
 
 }

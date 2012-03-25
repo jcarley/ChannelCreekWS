@@ -1,7 +1,9 @@
 package com.channelcreek.webservices.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import org.hibernate.annotations.Cascade;
@@ -21,8 +23,8 @@ public class Team implements Serializable {
   private boolean active;
 
   @Id
-  @GeneratedValue(strategy=GenerationType.TABLE)
-  protected long getTeamId() {
+  @GeneratedValue
+  public long getTeamId() {
     return teamId;
   }
 
@@ -46,7 +48,7 @@ public class Team implements Serializable {
     return this.active;
   }
 
-  @OneToMany(mappedBy="team")
+  @OneToMany(mappedBy="team", fetch=FetchType.LAZY)
   public Set<Schedule> getSchedules() {
     return schedules;
   }
@@ -59,7 +61,7 @@ public class Team implements Serializable {
     this.schedules = schedules;
   }
 
-  @OneToMany(mappedBy = "team")
+  @OneToMany(mappedBy = "team", fetch=FetchType.LAZY)
   @Cascade(value={CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
   public Set<Player> getPlayers() {
     return this.players;
@@ -70,8 +72,8 @@ public class Team implements Serializable {
   }
 
   @Transient
-  public Set<Player> getActivePlayers() {
-    Set<Player> activePlayers = new HashSet<Player>();
+  public List<Player> getActivePlayers() {
+    List<Player> activePlayers = new ArrayList<Player>();
     for(Player player : getPlayers()) {
       if(player.isActive())
         activePlayers.add(player);
