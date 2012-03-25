@@ -6,7 +6,8 @@ import com.channelcreek.webservices.tasks.ActivatePlayerTask;
 import com.channelcreek.webservices.tasks.FindActivePlayersTask;
 import com.channelcreek.webservices.tasks.FindActiveTeamsTask;
 import com.channelcreek.webservices.tasks.SubmitPlayerToTeamRosterTask;
-import com.channelcreek.webservices.tests.data.DbHelper;
+import com.channelcreek.webservices.tests.data.DbFactory;
+import com.channelcreek.webservices.tests.data.PropertyOverrides;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -23,12 +24,10 @@ public class RosterTasksTests {
 
   @Before
   public void setUp() {
-    DbHelper.setUp();
   }
 
   @After
   public void tearDown() {
-    DbHelper.tearDown();
   }
 
   @Test
@@ -98,6 +97,14 @@ public class RosterTasksTests {
 
   @Test
   public void testActivateExistingPlayer_RosterMaxExceeded() {
+
+    Player player = DbFactory.build(Player.class, new PropertyOverrides<Player>() {
+      @Override
+      public void override(Player obj) {
+        obj.setJerseyNumber(65);
+      }
+    });
+
     long teamId = 2;
     long playerId = 3;
 
