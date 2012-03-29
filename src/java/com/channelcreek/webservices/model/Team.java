@@ -15,8 +15,8 @@ import org.hibernate.annotations.CascadeType;
  */
 @Entity
 public class Team implements Serializable {
-  private Set<Schedule> schedules;
-  private Set<Player> players;
+  private Set<Schedule> schedules = new HashSet<Schedule>();
+  private Set<Player> players = new HashSet<Player>();
 
   private long teamId;
   private String name;
@@ -61,7 +61,7 @@ public class Team implements Serializable {
     this.schedules = schedules;
   }
 
-  @OneToMany(mappedBy = "team", fetch=FetchType.LAZY)
+  @OneToMany(mappedBy = "team")
   @Cascade(value={CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
   public Set<Player> getPlayers() {
     return this.players;
@@ -69,6 +69,52 @@ public class Team implements Serializable {
 
   protected void setPlayers(Set<Player> players) {
     this.players = players;
+  }
+
+  public boolean addPlayer(Player player) {
+
+    if(player != null && this.players.add(player)) {
+      player.setTeam(this);
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * This adds a list of players to this team.  This method is
+   * an all or nothing operation.  If at least one player add
+   * fails, then all players are rolled back.
+   *
+   * @param players the list of players to add
+   * @return true if all players were added successfully, otherwise false
+   */
+  public boolean addPlayers(Player... players) {
+
+    boolean isSuccess = true;
+
+    for(Player player : players) {
+      if(!addPlayer(player)) {
+        isSuccess = false;
+      }
+    }
+
+    if(!isSuccess) {
+      for(Player player : players) {
+        removePlayer(player);
+      }
+    }
+
+    return isSuccess;
+  }
+
+  public boolean removePlayer(Player player) {
+    if(player != null && this.players.remove(player)) {
+      player.setTeam(null);
+      return true;
+    }
+
+    return false;
   }
 
   @Transient

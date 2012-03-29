@@ -3,6 +3,8 @@ package com.channelcreek.webservices.tasks;
 import com.channelcreek.infrastructure.tasks.BaseTask;
 import com.channelcreek.webservices.model.Player;
 import com.channelcreek.webservices.model.Team;
+import java.util.Iterator;
+import org.hibernate.Session;
 
 /**
  * Activates a player on a team.  The player must already exist in the system
@@ -33,14 +35,24 @@ public class ActivatePlayerTask extends BaseTask {
 
   @Override
   public void Execute() {
-    Team team = (Team)getSession().get(Team.class, this.teamId);
+
+    Session session = getSession();
+
+    Team team = (Team)session.get(Team.class, this.teamId);
 
     if(team == null) {
       this.successful = false;
       return;
     }
 
-    this.player = (Player)getSession().get(Player.class, this.playerId);
+    Iterator<Player> iterator = team.getPlayers().iterator();
+    while(iterator.hasNext()) {
+      this.player = iterator.next();
+
+      if(this.player.getPlayerId() == this.playerId) {
+        break;
+      }
+    }
 
     if(this.player == null) {
       this.successful = false;
@@ -54,7 +66,7 @@ public class ActivatePlayerTask extends BaseTask {
 
     this.player.setActive(true);
 
-    getSession().saveOrUpdate(player);
+    session.saveOrUpdate(player);
 
     this.successful = true;
   }

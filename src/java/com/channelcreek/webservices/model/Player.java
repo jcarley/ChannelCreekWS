@@ -76,5 +76,12 @@ public class Player implements Serializable {
 
   public void setTeam(Team team) {
     this.team = team;
+
+//    if(team != null) {
+//      team.addPlayer(this);
+//    } else {
+//      team.removePlayer(this);
+//    }
   }
+
 }

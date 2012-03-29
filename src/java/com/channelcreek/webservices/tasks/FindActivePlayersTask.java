@@ -1,11 +1,10 @@
 package com.channelcreek.webservices.tasks;
 
 import com.channelcreek.infrastructure.tasks.BaseTask;
-import com.channelcreek.webservices.model.HibernateUtil;
 import com.channelcreek.webservices.model.Player;
 import com.channelcreek.webservices.model.Team;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import org.hibernate.Session;
 
 /**
@@ -15,25 +14,27 @@ import org.hibernate.Session;
 public class FindActivePlayersTask extends BaseTask {
 
   private long teamId;
-  private ArrayList<Player> activePlayers = new ArrayList<Player>();
+  private List<Player> activePlayers;
 
   public FindActivePlayersTask(long teamId) {
     this.teamId = teamId;
   }
 
-  public ArrayList<Player> getPlayers() {
+  public List<Player> getPlayers() {
     return this.activePlayers;
   }
 
   @Override
   public void Execute() {
 
-    Session session = HibernateUtil.getSessionFactory().openSession();
+    // we get the hibernate session from the base class.  We don't
+    // have to worry about managing it.  The infrastructure will handle
+    // that for us.
+    Session session = getSession();
+
     Team team = (Team)session.get(Team.class, this.teamId);
 
-    Collections.copy(team.getActivePlayers(), this.activePlayers);
-
-    session.close();
+    this.activePlayers = new ArrayList<Player>(team.getActivePlayers());
   }
 
 }
