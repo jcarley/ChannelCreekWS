@@ -15,8 +15,10 @@ public class TaskExecutor {
     try {
       task.Run(session);
     } finally {
-      if(session.isOpen())
+      if(session.isOpen()) {
+        session.disconnect();
         session.close();
+      }
     }
 
   }

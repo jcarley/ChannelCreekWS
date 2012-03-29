@@ -21,6 +21,7 @@ public class DbFactory {
   public static void main(String[] args) {
     new DbFactory();
   }
+
   private final static String DATA_FILE_NAME = "data.yml";
   private static LinkedHashMap map = null;
 
@@ -48,6 +49,10 @@ public class DbFactory {
     session.close();
   }
 
+  public static <T extends Object> T build(Class<T> clazz) {
+    return build(clazz, null);
+  }
+
   public static <T extends Object> T build(Class<T> clazz, BuildPropertyOverrides<T> action) {
 
     DynamicClassDescriptor<T> dcd = buildClassDescriptor(clazz);
@@ -58,6 +63,10 @@ public class DbFactory {
     }
 
     return newInstance;
+  }
+
+  public static <T extends Object> List<T> sequence(Class<T> clazz, int count) {
+    return sequence(clazz, count, null);
   }
 
   public static <T extends Object> List<T> sequence(Class<T> clazz, int count, SequencePropertyOverrides<T> action) {

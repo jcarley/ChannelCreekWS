@@ -28,7 +28,7 @@ public class HibernateUtil {
       configuration = new AnnotationConfiguration()
               .setNamingStrategy(ImprovedNamingStrategy.INSTANCE)
               .configure();
-      
+
     } catch (Throwable ex) {
       // Log the exception.
       System.err.println("Initial SessionFactory creation failed." + ex);

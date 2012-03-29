@@ -34,11 +34,15 @@ public abstract class BaseTask {
       rollbackTransaction();
       OnError(e);
       return false;
+    } catch (Exception e) {
+      rollbackTransaction();
+      OnError(e);
+      return false;
     }
 
     return true;
   }
-  
+
   protected Session getSession() {
     return this.session;
   }
