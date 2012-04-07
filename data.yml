@@ -9,7 +9,10 @@ player:
   position: Short Stop
 
 schedule:
-  seasonName: "2010"
+  seasonName: "Season-2010"
 
 game:
+  gameDate: 7-10-2012
   location: County Stadium
+  homeFinalScore: 0
+  visitorFinalScore: 0

@@ -1,7 +1,8 @@
 package com.channelcreek.webservices.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ public class Game implements Serializable {
   private String location;
   private int homeFinalScore;
   private int visitorFinalScore;
-  private List<Schedule> schedules;
+  private Set<Schedule> schedules = new HashSet<Schedule>();
 
   @Id
   @GeneratedValue
@@ -63,11 +64,19 @@ public class Game implements Serializable {
   }
 
   @ManyToMany(mappedBy = "games")
-  public List<Schedule> getSchedules() {
+  public Set<Schedule> getSchedules() {
     return schedules;
   }
 
-  public void setSchedules(List<Schedule> schedules) {
+  protected void setSchedules(Set<Schedule> schedules) {
     this.schedules = schedules;
+  }
+
+  public boolean addSchedule(Schedule schedule) {
+    if(schedule != null && this.schedules.add(schedule)) {
+      schedule.addGame(this);
+      return true;
+    }
+    return false;
   }
 }

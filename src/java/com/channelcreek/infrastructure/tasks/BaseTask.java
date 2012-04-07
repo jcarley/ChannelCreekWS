@@ -1,6 +1,5 @@
 package com.channelcreek.infrastructure.tasks;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -12,12 +11,13 @@ public abstract class BaseTask {
 
   private Session session;
   private Transaction transaction;
+  private boolean successful = false;
 
   protected void Initialize(Session session) {
     this.session = session;
   }
 
-  public abstract void Execute();
+  public abstract void Execute() throws Exception;
 
   protected void OnError(Exception e) {
   }
@@ -30,13 +30,11 @@ public abstract class BaseTask {
       beginTransaction();
       Execute();
       commitTransaction();
-    } catch (HibernateException e) {
-      rollbackTransaction();
-      OnError(e);
-      return false;
+      setSuccessful(true);
     } catch (Exception e) {
       rollbackTransaction();
       OnError(e);
+      setSuccessful(false);
       return false;
     }
 
@@ -61,5 +59,13 @@ public abstract class BaseTask {
 
   private void rollbackTransaction() {
     getTransaction().rollback();
+  }
+
+  public boolean isSuccessful() {
+    return this.successful;
+  }
+
+  private void setSuccessful(boolean successful) {
+    this.successful = successful;
   }
 }

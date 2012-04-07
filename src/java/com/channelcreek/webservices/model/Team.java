@@ -49,16 +49,31 @@ public class Team implements Serializable {
   }
 
   @OneToMany(mappedBy="team", fetch=FetchType.LAZY)
+  @Cascade(value={CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
   public Set<Schedule> getSchedules() {
     return schedules;
   }
 
-  public Schedule getSchedule(String seasonName) {
-    return null;
+  protected void setSchedules(Set<Schedule> schedules) {
+    this.schedules = schedules;
   }
 
-  public void setSchedules(Set<Schedule> schedules) {
-    this.schedules = schedules;
+  public boolean addSchedule(Schedule schedule) {
+    if(schedule != null && this.schedules.add(schedule)) {
+      schedule.setTeam(this);
+      return true;
+    }
+
+    return false;
+  }
+
+  public boolean removeSchedule(Schedule schedule) {
+    if(schedule != null && this.schedules.remove(schedule)) {
+      schedule.setTeam(null);
+      return true;
+    }
+
+    return false;
   }
 
   @OneToMany(mappedBy = "team")

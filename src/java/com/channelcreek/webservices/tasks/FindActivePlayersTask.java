@@ -25,7 +25,7 @@ public class FindActivePlayersTask extends BaseTask {
   }
 
   @Override
-  public void Execute() {
+  public void Execute() throws Exception {
 
     // we get the hibernate session from the base class.  We don't
     // have to worry about managing it.  The infrastructure will handle

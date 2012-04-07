@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  *
@@ -34,23 +36,30 @@ public class Schedule implements Serializable {
     this.seasonName = seasonName;
   }
 
-  @ManyToMany
+  @ManyToMany(fetch=FetchType.LAZY)
   @JoinTable(
           joinColumns={@JoinColumn(name="schedule_id")},
           inverseJoinColumns={@JoinColumn(name="game_id")})
+  @Cascade(value={CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
   public Set<Game> getGames() {
     return games;
   }
 
-  void setGames(Set<Game> games) {
+  protected void setGames(Set<Game> games) {
     this.games = games;
   }
 
-  public void addGame(Game game) {
-    getGames().add(game);
+  public boolean addGame(Game game) {
+
+    if(game != null && this.games.add(game)) {
+      game.addSchedule(this);
+      return true;
+    }
+
+    return false;
   }
 
-  @ManyToOne
+  @ManyToOne(fetch= FetchType.LAZY)
   @JoinColumn(name="team_id")
   public Team getTeam() {
     return team;

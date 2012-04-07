@@ -29,7 +29,6 @@ public class RosterTasksTests {
 
   @Before
   public void setUp() {
-    HibernateUtil.updateDatabaseScheme();
   }
 
   @After
@@ -113,7 +112,7 @@ public class RosterTasksTests {
     String position = "Leftfield";
     boolean active = true;
 
-    Team team = DbFactory.build(Team.class, null);
+    Team team = DbFactory.build(Team.class);
     Session session = HibernateUtil.getSessionFactory().openSession();
     DbFactory.save(team, session);
 

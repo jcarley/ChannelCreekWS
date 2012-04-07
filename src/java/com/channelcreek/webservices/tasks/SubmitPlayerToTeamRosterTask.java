@@ -3,6 +3,7 @@ package com.channelcreek.webservices.tasks;
 import com.channelcreek.infrastructure.tasks.BaseTask;
 import com.channelcreek.webservices.model.Player;
 import com.channelcreek.webservices.model.Team;
+import javax.persistence.EntityNotFoundException;
 import org.hibernate.Session;
 
 /**
@@ -18,7 +19,6 @@ public class SubmitPlayerToTeamRosterTask extends BaseTask {
   private int jerseyNumber;
   private String position;
   private boolean active;
-  private boolean successful;
 
   public SubmitPlayerToTeamRosterTask(long teamId, String name, int jerseyNumber, String position, boolean active) {
     this.teamId = teamId;
@@ -26,19 +26,17 @@ public class SubmitPlayerToTeamRosterTask extends BaseTask {
     this.jerseyNumber = jerseyNumber;
     this.position = position;
     this.active = active;
-    this.successful = false;
   }
 
   @Override
-  public void Execute() {
+  public void Execute() throws Exception {
 
     Session session = getSession();
 
     Team team = (Team)session.get(Team.class, teamId);
 
     if(team == null) {
-      this.successful = false;
-      return;
+      throw new EntityNotFoundException("Unable to find team with id '" + this.teamId + "'");
     }
 
     player = new Player(name, true, jerseyNumber, position);
@@ -47,8 +45,6 @@ public class SubmitPlayerToTeamRosterTask extends BaseTask {
     team.addPlayer(player);
 
     session.saveOrUpdate(team);
-
-    this.successful = true;
   }
 
   @Override
@@ -60,9 +56,4 @@ public class SubmitPlayerToTeamRosterTask extends BaseTask {
   public Player getPlayer() {
     return this.player;
   }
-
-  public boolean isSuccessful() {
-    return this.successful;
-  }
-
 }

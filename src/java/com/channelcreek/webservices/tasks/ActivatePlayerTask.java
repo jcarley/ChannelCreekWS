@@ -4,6 +4,7 @@ import com.channelcreek.infrastructure.tasks.BaseTask;
 import com.channelcreek.webservices.model.Player;
 import com.channelcreek.webservices.model.Team;
 import java.util.Iterator;
+import javax.persistence.EntityNotFoundException;
 import org.hibernate.Session;
 
 /**
@@ -21,7 +22,6 @@ public class ActivatePlayerTask extends BaseTask {
   private Player player;
   private long teamId;
   private long playerId;
-  private boolean successful;
 
   /**
    *
@@ -34,15 +34,14 @@ public class ActivatePlayerTask extends BaseTask {
   }
 
   @Override
-  public void Execute() {
+  public void Execute() throws Exception {
 
     Session session = getSession();
 
     Team team = (Team)session.get(Team.class, this.teamId);
 
     if(team == null) {
-      this.successful = false;
-      return;
+      throw new EntityNotFoundException("Unable to find team with id '" + this.teamId + "'");
     }
 
     Iterator<Player> iterator = team.getPlayers().iterator();
@@ -55,28 +54,20 @@ public class ActivatePlayerTask extends BaseTask {
     }
 
     if(this.player == null) {
-      this.successful = false;
-      return;
+      throw new EntityNotFoundException("Unable to find player with id '" + this.playerId + "'");
     }
 
     if(team.getActivePlayers().size() == MAX_ACTIVE_PLAYER_COUNT) {
-      this.successful = false;
-      return;
+      throw new ActiveRosterSizeExceededException("Max active player count of " + MAX_ACTIVE_PLAYER_COUNT + " exceeded.");
     }
 
     this.player.setActive(true);
 
     session.saveOrUpdate(player);
-
-    this.successful = true;
   }
 
   public Player getPlayer() {
     return this.player;
-  }
-
-  public boolean isSuccessful() {
-    return this.successful;
   }
 
 }

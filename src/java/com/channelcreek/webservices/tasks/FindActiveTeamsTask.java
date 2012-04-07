@@ -1,7 +1,6 @@
 package com.channelcreek.webservices.tasks;
 
 import com.channelcreek.infrastructure.tasks.BaseTask;
-import com.channelcreek.webservices.model.HibernateUtil;
 import com.channelcreek.webservices.model.Team;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,9 +22,9 @@ public class FindActiveTeamsTask extends BaseTask {
   }
 
   @Override
-  public void Execute() {
+  public void Execute() throws Exception {
 
-    Session session = HibernateUtil.getSessionFactory().openSession();
+    Session session = super.getSession();
     Criteria criteria = session.createCriteria(Team.class);
     Query query = session.createQuery("from Team where active = true");
     List list = query.list();
@@ -34,8 +33,6 @@ public class FindActiveTeamsTask extends BaseTask {
     while(iterator.hasNext()) {
       activeTeams.add((Team)iterator.next());
     }
-
-    session.close();
   }
 
 }
