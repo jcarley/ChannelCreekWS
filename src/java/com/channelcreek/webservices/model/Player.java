@@ -2,6 +2,7 @@ package com.channelcreek.webservices.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import org.hibernate.annotations.ForeignKey;
 
 /**
  *
@@ -27,7 +28,7 @@ public class Player implements Serializable {
   }
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy= GenerationType.AUTO)
   public long getPlayerId() {
     return playerId;
   }
@@ -36,6 +37,7 @@ public class Player implements Serializable {
     this.playerId = playerId;
   }
 
+  @Column(length=50)
   public String getName() {
     return name;
   }
@@ -60,6 +62,7 @@ public class Player implements Serializable {
     this.jerseyNumber = jerseyNumber;
   }
 
+  @Column(length=25)
   public String getPosition() {
     return position;
   }
@@ -68,8 +71,9 @@ public class Player implements Serializable {
     this.position = position;
   }
 
-  @ManyToOne
+  @ManyToOne(optional=false)
   @JoinColumn(name="team_id")
+  @ForeignKey(name="fk_player_team")
   public Team getTeam() {
     return team;
   }

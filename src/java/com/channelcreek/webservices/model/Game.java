@@ -3,10 +3,8 @@ package com.channelcreek.webservices.model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+import org.hibernate.annotations.ForeignKey;
 
 /**
  *
@@ -17,12 +15,14 @@ public class Game implements Serializable {
   private long gameId;
   private String gameDate;
   private String location;
+  private Team homeTeam;
+  private Team visitorTeam;
   private int homeFinalScore;
   private int visitorFinalScore;
   private Set<Schedule> schedules = new HashSet<Schedule>();
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy= GenerationType.AUTO)
   public long getGameId() {
     return gameId;
   }
@@ -39,6 +39,7 @@ public class Game implements Serializable {
     this.gameDate = gameDate;
   }
 
+  @Column(length=75)
   public String getLocation() {
     return location;
   }
@@ -47,6 +48,7 @@ public class Game implements Serializable {
     this.location = location;
   }
 
+  @Column(nullable=true)
   public int getHomeFinalScore() {
     return homeFinalScore;
   }
@@ -55,12 +57,33 @@ public class Game implements Serializable {
     this.homeFinalScore = homeFinalScore;
   }
 
+  @Column(nullable=true)
   public int getVisitorFinalScore() {
     return visitorFinalScore;
   }
 
   public void setVisitorFinalScore(int visitorFinalScore) {
     this.visitorFinalScore = visitorFinalScore;
+  }
+
+  @OneToOne(optional=true)
+  @ForeignKey(name="fk_home_team")
+  public Team getHomeTeam() {
+    return homeTeam;
+  }
+
+  public void setHomeTeam(Team homeTeam) {
+    this.homeTeam = homeTeam;
+  }
+
+  @OneToOne(optional=true)
+  @ForeignKey(name="fk_visitor_team")
+  public Team getVisitorTeam() {
+    return visitorTeam;
+  }
+
+  public void setVisitorTeam(Team visitorTeam) {
+    this.visitorTeam = visitorTeam;
   }
 
   @ManyToMany(mappedBy = "games")

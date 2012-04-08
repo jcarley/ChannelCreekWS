@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.ForeignKey;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Schedule implements Serializable {
   private Set<Game> games = new HashSet<Game>();
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy= GenerationType.AUTO)
   protected long getScheduleId() {
     return scheduleId;
   }
@@ -28,6 +29,7 @@ public class Schedule implements Serializable {
     this.scheduleId = scheduleId;
   }
 
+  @Column(length=25)
   public String getSeasonName() {
     return seasonName;
   }
@@ -41,6 +43,7 @@ public class Schedule implements Serializable {
           joinColumns={@JoinColumn(name="schedule_id")},
           inverseJoinColumns={@JoinColumn(name="game_id")})
   @Cascade(value={CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+  @ForeignKey(name="fk_schedule_games", inverseName="fk_game_schedules")
   public Set<Game> getGames() {
     return games;
   }
@@ -59,8 +62,9 @@ public class Schedule implements Serializable {
     return false;
   }
 
-  @ManyToOne(fetch= FetchType.LAZY)
+  @ManyToOne(optional=false, fetch= FetchType.LAZY)
   @JoinColumn(name="team_id")
+  @ForeignKey(name="fk_schedule_team")
   public Team getTeam() {
     return team;
   }
