@@ -2,6 +2,7 @@ package com.channelcreek.webservices.tasks;
 
 import com.channelcreek.infrastructure.tasks.BaseTask;
 import com.channelcreek.webservices.model.Game;
+import javax.persistence.EntityNotFoundException;
 import org.hibernate.Session;
 
 /**
@@ -21,6 +22,10 @@ public class ReportGameScoresTask extends BaseTask {
   public void Execute() throws Exception {
     Session session = super.getSession();
     this.game = (Game)session.get(Game.class, this.gameId);
+
+    if(this.game == null) {
+      throw new EntityNotFoundException("Unable to find game with id '" + this.gameId + "'");
+    }
   }
 
   public Game getGame() {

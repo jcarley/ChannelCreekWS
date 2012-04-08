@@ -73,9 +73,34 @@ public class ScheduleTasksTests {
 
     // Assert
     assertNotNull(retrieveTeamScheduleTask.getSchedule());
+    assertTrue(retrieveTeamScheduleTask.isSuccessful());
     assertEquals(EXPECTED_GAMES, retrieveTeamScheduleTask.getSchedule().getGames().size());
     assertEquals(EXPECTED_SEASON_NAME, retrieveTeamScheduleTask.getSchedule().getSeasonName());
 
+  }
+
+  @Test
+  public void testShouldNotRetrieveATeamsSeasonSchedule_EntityNotFound_InvalidTeamId() {
+
+    // Act
+    RetrieveTeamScheduleTask retrieveTeamScheduleTask = new RetrieveTeamScheduleTask(99, EXPECTED_SEASON_NAME);
+    TaskExecutor.executeTask(retrieveTeamScheduleTask);
+
+    // Assert
+    assertNull(retrieveTeamScheduleTask.getSchedule());
+    assertFalse(retrieveTeamScheduleTask.isSuccessful());
+  }
+
+  @Test
+  public void testShouldNotRetrieveATeamsSeasonSchedule_EntityNotFound_InvalidSeasonName() {
+
+    // Act
+    RetrieveTeamScheduleTask retrieveTeamScheduleTask = new RetrieveTeamScheduleTask(team.getTeamId(), "Season-1900");
+    TaskExecutor.executeTask(retrieveTeamScheduleTask);
+
+    // Assert
+    assertNull(retrieveTeamScheduleTask.getSchedule());
+    assertFalse(retrieveTeamScheduleTask.isSuccessful());
   }
 
   @Test
@@ -89,10 +114,21 @@ public class ScheduleTasksTests {
 
     // Assert
     assertNotNull(reportGameScoresTask.getGame());
+    assertTrue(reportGameScoresTask.isSuccessful());
     assertEquals(game.getHomeFinalScore(), reportGameScoresTask.getGame().getHomeFinalScore());
     assertEquals(game.getVisitorFinalScore(), reportGameScoresTask.getGame().getVisitorFinalScore());
+  }
 
+  @Test
+  public void testShouldNotReportGameScore_EntityNotFound() {
 
+    // Act
+    ReportGameScoresTask reportGameScoresTask = new ReportGameScoresTask(99);
+    TaskExecutor.executeTask(reportGameScoresTask);
+
+    // Assert
+    assertNull(reportGameScoresTask.getGame());
+    assertFalse(reportGameScoresTask.isSuccessful());
   }
 
 }

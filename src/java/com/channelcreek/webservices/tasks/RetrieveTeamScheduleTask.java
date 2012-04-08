@@ -2,6 +2,7 @@ package com.channelcreek.webservices.tasks;
 
 import com.channelcreek.infrastructure.tasks.BaseTask;
 import com.channelcreek.webservices.model.Schedule;
+import javax.persistence.EntityNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -38,6 +39,10 @@ public class RetrieveTeamScheduleTask extends BaseTask {
     query.setLong("teamId", this.teamId);
     query.setString("seasonName", this.seasonName);
     this.schedule = (Schedule)query.uniqueResult();
+
+    if(this.schedule == null) {
+      throw new EntityNotFoundException("Unable to find schedule " + this.seasonName + " for team with id '" + this.teamId + "'");
+    }
   }
 
 }

@@ -11,6 +11,7 @@ public abstract class BaseTask {
 
   private Session session;
   private Transaction transaction;
+  private Exception exception;
   private boolean successful = false;
 
   protected void Initialize(Session session) {
@@ -20,6 +21,7 @@ public abstract class BaseTask {
   public abstract void Execute() throws Exception;
 
   protected void OnError(Exception e) {
+    this.exception = e;
   }
 
   public boolean Run(Session session) {
@@ -67,5 +69,9 @@ public abstract class BaseTask {
 
   private void setSuccessful(boolean successful) {
     this.successful = successful;
+  }
+
+  public Exception getException() {
+    return exception;
   }
 }
