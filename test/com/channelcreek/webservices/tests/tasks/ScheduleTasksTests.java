@@ -5,6 +5,7 @@ import com.channelcreek.webservices.model.Game;
 import com.channelcreek.webservices.model.HibernateUtil;
 import com.channelcreek.webservices.model.Schedule;
 import com.channelcreek.webservices.model.Team;
+import com.channelcreek.webservices.tasks.ReportGameScoresTask;
 import com.channelcreek.webservices.tasks.RetrieveTeamScheduleTask;
 import com.channelcreek.webservices.tests.data.DbFactory;
 import com.channelcreek.webservices.tests.data.SequencePropertyOverrides;
@@ -21,27 +22,24 @@ import org.junit.Test;
  */
 public class ScheduleTasksTests {
 
+  final int EXPECTED_GAMES = 5;
+  final String EXPECTED_SEASON_NAME = "Season-2010";
+
+  private Team team;
+  private Schedule schedule;
+  private List<Game> games;
+
   public ScheduleTasksTests() {
   }
 
   @Before
   public void setUp() {
-  }
 
-  @After
-  public void tearDown() {
-  }
-
-  @Test
-  public void testShouldRetrieveATeamsSeasonSchedule() {
     // Arrange
-    final int EXPECTED_GAMES = 5;
-    final String EXPECTED_SEASON_NAME = "Season-2010";
+    team = DbFactory.build(Team.class);
+    schedule = DbFactory.build(Schedule.class);
 
-    Team team = DbFactory.build(Team.class);
-    Schedule schedule = DbFactory.build(Schedule.class);
-
-    List<Game> games = DbFactory.sequence(Game.class, EXPECTED_GAMES, new SequencePropertyOverrides<Game>() {
+    games = DbFactory.sequence(Game.class, EXPECTED_GAMES, new SequencePropertyOverrides<Game>() {
 
       @Override
       public void override(Game obj, int index) {
@@ -60,6 +58,14 @@ public class ScheduleTasksTests {
 
     Session session = HibernateUtil.getSessionFactory().openSession();
     DbFactory.save(team, session);
+  }
+
+  @After
+  public void tearDown() {
+  }
+
+  @Test
+  public void testShouldRetrieveATeamsSeasonSchedule() {
 
     // Act
     RetrieveTeamScheduleTask retrieveTeamScheduleTask = new RetrieveTeamScheduleTask(team.getTeamId(), EXPECTED_SEASON_NAME);
@@ -69,6 +75,23 @@ public class ScheduleTasksTests {
     assertNotNull(retrieveTeamScheduleTask.getSchedule());
     assertEquals(EXPECTED_GAMES, retrieveTeamScheduleTask.getSchedule().getGames().size());
     assertEquals(EXPECTED_SEASON_NAME, retrieveTeamScheduleTask.getSchedule().getSeasonName());
+
+  }
+
+  @Test
+  public void testShouldReportGameScores() {
+
+    Game game = games.get(0);
+
+    // Act
+    ReportGameScoresTask reportGameScoresTask = new ReportGameScoresTask(game.getGameId());
+    TaskExecutor.executeTask(reportGameScoresTask);
+
+    // Assert
+    assertNotNull(reportGameScoresTask.getGame());
+    assertEquals(game.getHomeFinalScore(), reportGameScoresTask.getGame().getHomeFinalScore());
+    assertEquals(game.getVisitorFinalScore(), reportGameScoresTask.getGame().getVisitorFinalScore());
+
 
   }
 

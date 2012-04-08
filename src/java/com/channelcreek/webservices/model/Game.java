@@ -23,7 +23,7 @@ public class Game implements Serializable {
 
   @Id
   @GeneratedValue
-  protected long getGameId() {
+  public long getGameId() {
     return gameId;
   }
 
