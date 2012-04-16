@@ -42,11 +42,31 @@ public class DbFactory {
     session.close();
   }
 
+  public static void save(List<? extends Object> list, Session session, boolean leaveSessionOpen) {
+    Transaction transaction = session.beginTransaction();
+    for(int index = 0; index < list.size(); index++) {
+      session.saveOrUpdate(list.get(index));
+    }
+    transaction.commit();
+
+    if(!leaveSessionOpen)
+      session.close();
+  }
+
   public static void save(Object obj, Session session) {
     Transaction transaction = session.beginTransaction();
     session.saveOrUpdate(obj);
     transaction.commit();
     session.close();
+  }
+
+  public static void save(Object obj, Session session, boolean leaveSessionOpen) {
+    Transaction transaction = session.beginTransaction();
+    session.saveOrUpdate(obj);
+    transaction.commit();
+
+    if(!leaveSessionOpen)
+      session.close();
   }
 
   public static <T extends Object> T build(Class<T> clazz) {

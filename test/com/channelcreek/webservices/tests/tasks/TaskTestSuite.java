@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
  * @author Jefferson Carley
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({RosterTasksTests.class, ScheduleTasksTests.class})
+@Suite.SuiteClasses({RosterTasksTests.class, ScheduleTasksTests.class, LeagueStandingsTasksTests.class})
 public class TaskTestSuite {
 
 //  @BeforeClass
