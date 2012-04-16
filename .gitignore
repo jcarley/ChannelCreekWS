@@ -4,4 +4,5 @@ build/
 derby.log
 dist/
 
+nbproject/private/
 
