@@ -8,6 +8,7 @@ import com.channelcreek.webservices.model.TeamStanding;
 import com.channelcreek.webservices.tasks.*;
 import java.util.List;
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 
 /**
@@ -18,7 +19,7 @@ import javax.jws.WebService;
 public class ChannelCreekService {
 
   @WebMethod(operationName = "calculateTeamStandings")
-  public List<TeamStanding> calculateTeamStandings(String seasonName) {
+  public List<TeamStanding> calculateTeamStandings(@WebParam(name = "seasonName") String seasonName) {
 
     CalculateLeagueStandingsTask calculateLeagueStandingsTask = new CalculateLeagueStandingsTask(seasonName);
     TaskExecutor.executeTask(calculateLeagueStandingsTask);
@@ -26,14 +27,14 @@ public class ChannelCreekService {
   }
 
   @WebMethod(operationName = "retrieveTeamSchedule")
-  public List<Game> retrieveTeamSchedule(int teamId, String seasonName) {
+  public List<Game> retrieveTeamSchedule(@WebParam(name = "teamId") int teamId, @WebParam(name = "seasonName") String seasonName) {
     RetrieveTeamScheduleTask retrieveTeamScheduleTask = new RetrieveTeamScheduleTask(teamId, seasonName);
     TaskExecutor.executeTask(retrieveTeamScheduleTask);
     return (List<Game>) retrieveTeamScheduleTask.getSchedule().getGames();
   }
 
   @WebMethod(operationName = "reportGameScores")
-  public Game reportGameScores(int gameId) {
+  public Game reportGameScores(@WebParam(name = "gameId") int gameId) {
     ReportGameScoresTask reportGameScoresTask = new ReportGameScoresTask(gameId);
     TaskExecutor.executeTask(reportGameScoresTask);
     return reportGameScoresTask.getGame();
@@ -47,14 +48,14 @@ public class ChannelCreekService {
   }
 
   @WebMethod(operationName = "retrieveAllActivePlayers")
-  public List<Player> retrieveAllActivePlayers(int teamId) {
+  public List<Player> retrieveAllActivePlayers(@WebParam(name = "teamId") int teamId) {
     FindActivePlayersTask findActivePlayersTask = new FindActivePlayersTask(teamId);
     TaskExecutor.executeTask(findActivePlayersTask);
     return findActivePlayersTask.getPlayers();
   }
 
   @WebMethod(operationName = "submitPlayerToTeamRoster")
-  public Player submitPlayerToTeamRoster(int teamId, String name, int jerseyNumber, String position) {
+  public Player submitPlayerToTeamRoster(@WebParam(name = "teamId") int teamId, @WebParam(name = "name") String name, @WebParam(name = "jerseyNumber") int jerseyNumber, @WebParam(name = "position") String position) {
 
     SubmitPlayerToTeamRosterTask submitPlayerToTeamRosterTask = new SubmitPlayerToTeamRosterTask(
             teamId,
@@ -67,10 +68,10 @@ public class ChannelCreekService {
   }
 
   @WebMethod(operationName = "activatePlayer")
-  public Player activatePlayer(int teamId, int playerId) {
+  public Player activatePlayer(@WebParam(name = "teamId") int teamId, @WebParam(name = "playerId") int playerId) {
     ActivatePlayerTask activatePlayerTask = new ActivatePlayerTask(teamId, playerId);
     TaskExecutor.executeTask(activatePlayerTask);
     return activatePlayerTask.getPlayer();
   }
-  
+
 }

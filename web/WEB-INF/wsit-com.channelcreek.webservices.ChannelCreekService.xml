@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <definitions
+ xmlns="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="ChannelCreekService" targetNamespace="http://webservices.channelcreek.com/" xmlns:tns="http://webservices.channelcreek.com/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsrm="http://docs.oasis-open.org/ws-rx/wsrmp/200702"
+ >
+    <message name="calculateTeamStandings"/>
+    <message name="calculateTeamStandingsResponse"/>
+    <message name="retrieveTeamSchedule"/>
+    <message name="retrieveTeamScheduleResponse"/>
+    <message name="reportGameScores"/>
+    <message name="reportGameScoresResponse"/>
+    <message name="retrieveAllActiveTeams"/>
+    <message name="retrieveAllActiveTeamsResponse"/>
+    <message name="retrieveAllActivePlayers"/>
+    <message name="retrieveAllActivePlayersResponse"/>
+    <message name="submitPlayerToTeamRoster"/>
+    <message name="submitPlayerToTeamRosterResponse"/>
+    <message name="activatePlayer"/>
+    <message name="activatePlayerResponse"/>
+    <portType name="ChannelCreekService">
+        <operation name="calculateTeamStandings">
+            <input message="tns:calculateTeamStandings"/>
+            <output message="tns:calculateTeamStandingsResponse"/>
+        </operation>
+        <operation name="retrieveTeamSchedule">
+            <input message="tns:retrieveTeamSchedule"/>
+            <output message="tns:retrieveTeamScheduleResponse"/>
+        </operation>
+        <operation name="reportGameScores">
+            <input message="tns:reportGameScores"/>
+            <output message="tns:reportGameScoresResponse"/>
+        </operation>
+        <operation name="retrieveAllActiveTeams">
+            <input message="tns:retrieveAllActiveTeams"/>
+            <output message="tns:retrieveAllActiveTeamsResponse"/>
+        </operation>
+        <operation name="retrieveAllActivePlayers">
+            <input message="tns:retrieveAllActivePlayers"/>
+            <output message="tns:retrieveAllActivePlayersResponse"/>
+        </operation>
+        <operation name="submitPlayerToTeamRoster">
+            <input message="tns:submitPlayerToTeamRoster"/>
+            <output message="tns:submitPlayerToTeamRosterResponse"/>
+        </operation>
+        <operation name="activatePlayer">
+            <input message="tns:activatePlayer"/>
+            <output message="tns:activatePlayerResponse"/>
+        </operation>
+    </portType>
+    <binding name="ChannelCreekServicePortBinding" type="tns:ChannelCreekService">
+        <operation name="calculateTeamStandings">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="retrieveTeamSchedule">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="reportGameScores">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="retrieveAllActiveTeams">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="retrieveAllActivePlayers">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="submitPlayerToTeamRoster">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="activatePlayer">
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="ChannelCreekService">
+        <port name="ChannelCreekServicePort" binding="tns:ChannelCreekServicePortBinding"/>
+    </service>
+</definitions>
