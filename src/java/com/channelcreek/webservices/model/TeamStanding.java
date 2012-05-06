@@ -16,6 +16,9 @@ public class TeamStanding implements Comparable {
     this.teamName = team.getName();
   }
 
+  protected TeamStanding() {
+  }
+
   public long getTeamId() {
     return teamId;
   }
